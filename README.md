@@ -76,6 +76,16 @@ Decoding is done by browser built-in (software/hardware) media decoder.
 Requires [WebCodecs][webcodecs] support. At the moment, available only in
 [Chromium](https://www.chromestatus.com/feature/5669293909868544) and derivatives.
 
+#### scrcpy v4 session (video, audio and control)
+`action=stream-v4` mirrors a device with the unmodified upstream
+[Genymobile/scrcpy][scrcpy] v4.0 server instead of the WebSocket fork. Every
+connection starts its own server instance (video, audio and control on one
+WebSocket), which exits when the connection closes. Audio is Opus, decoded with
+[WebCodecs][webcodecs], and needs Android 11 or newer; while it streams, the
+device's own speaker is silent. The browser side is `ScrcpyV4Client` and
+`AudioPlayer`; see `src/common/ScrcpyV4.ts` for the message format. The bundled
+web UI still uses the WebSocket fork.
+
 #### Remote control
 * Touch events (including multi-touch)
 * Multi-touch emulation: <kbd>CTRL</kbd> to start with center at the center of
@@ -263,6 +273,10 @@ disconnected.
 Currently, support of WebSocket protocol added to v1.19 of scrcpy
 * [Prebuilt package](/vendor/Genymobile/scrcpy/scrcpy-server.jar)
 * [Source code][fork]
+
+The v4 session uses the upstream server:
+[scrcpy-server-v4.0](/vendor/Genymobile/scrcpy/scrcpy-server-v4.0.jar)
+(SHA-256 `84924bd564a1eb6089c872c7521f968058977f91f5ff02514a8c74aff3210f3a`).
 
 [fork]: https://github.com/NetrisTV/scrcpy/tree/feature/websocket-v1.19.x
 
