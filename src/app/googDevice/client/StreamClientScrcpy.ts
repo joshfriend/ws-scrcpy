@@ -13,6 +13,7 @@ import DragAndPushLogger from '../DragAndPushLogger';
 import { KeyEventListener, KeyInputHandler } from '../KeyInputHandler';
 import { KeyCodeControlMessage } from '../../controlMessage/KeyCodeControlMessage';
 import { BasePlayer, PlayerClass } from '../../player/BasePlayer';
+import { AudioPlayer } from '../../player/AudioPlayer';
 import GoogDeviceDescriptor from '../../../types/GoogDeviceDescriptor';
 import { ConfigureScrcpy } from './ConfigureScrcpy';
 import { DeviceTracker } from './DeviceTracker';
@@ -57,6 +58,7 @@ export class StreamClientScrcpy
     private touchHandler?: FeaturedInteractionHandler;
     private moreBox?: GoogMoreBox;
     private player?: BasePlayer;
+    private audioPlayer?: AudioPlayer;
     private filePushHandler?: FilePushHandler;
     private fitToScreen?: boolean;
     private readonly streamReceiver: StreamReceiverScrcpy;
@@ -267,6 +269,7 @@ export class StreamClientScrcpy
         this.filePushHandler = undefined;
         this.touchHandler?.release();
         this.touchHandler = undefined;
+        this.audioPlayer?.stop();
         window.removeEventListener('resize', this.onWindowResize);
         if (this.resizeTimeoutId !== undefined) {
             clearTimeout(this.resizeTimeoutId);
@@ -323,13 +326,18 @@ export class StreamClientScrcpy
             if (this.player) {
                 this.player.stop();
             }
+            this.audioPlayer?.stop();
         };
 
         const googMoreBox = (this.moreBox = new GoogMoreBox(udid, player, this));
         const moreBox = googMoreBox.getHolderElement();
         googMoreBox.setOnStop(stop);
+        if (AudioPlayer.isSupported()) {
+            this.audioPlayer = new AudioPlayer(AudioPlayer.buildUrl(this.params.ws, udid));
+        }
         const googToolBox = GoogToolBox.createToolBox(udid, player, this, moreBox, {
             captureKeyboard: this.params.captureKeyboard,
+            audioPlayer: this.audioPlayer,
         });
         this.controlButtons = googToolBox.getHolderElement();
         deviceView.appendChild(this.controlButtons);

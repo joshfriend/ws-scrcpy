@@ -76,6 +76,13 @@ Decoding is done by browser built-in (software/hardware) media decoder.
 Requires [WebCodecs][webcodecs] support. At the moment, available only in
 [Chromium](https://www.chromestatus.com/feature/5669293909868544) and derivatives.
 
+#### Audio
+The "Play audio" toolbox button plays the device audio in the browser. It runs
+an audio-only instance of upstream [Genymobile/scrcpy][scrcpy] v4.0 next to the
+video server, decoded with [WebCodecs][webcodecs]. Requires Android 11 or newer.
+While audio plays, the device's own speaker is silent (scrcpy captures the whole
+audio output).
+
 #### Remote control
 * Touch events (including multi-touch)
 * Multi-touch emulation: <kbd>CTRL</kbd> to start with center at the center of
@@ -263,6 +270,10 @@ disconnected.
 Currently, support of WebSocket protocol added to v1.19 of scrcpy
 * [Prebuilt package](/vendor/Genymobile/scrcpy/scrcpy-server.jar)
 * [Source code][fork]
+
+Audio uses the unmodified upstream server:
+[scrcpy-server-v4.0](/vendor/Genymobile/scrcpy/scrcpy-server-v4.0.jar)
+(SHA-256 `84924bd564a1eb6089c872c7521f968058977f91f5ff02514a8c74aff3210f3a`).
 
 [fork]: https://github.com/NetrisTV/scrcpy/tree/feature/websocket-v1.19.x
 

@@ -7,6 +7,7 @@ import { ToolBoxElement } from '../../toolbox/ToolBoxElement';
 import { ToolBoxCheckbox } from '../../toolbox/ToolBoxCheckbox';
 import { StreamClientScrcpy } from '../client/StreamClientScrcpy';
 import { BasePlayer } from '../../player/BasePlayer';
+import { AudioPlayer } from '../../player/AudioPlayer';
 
 const BUTTONS = [
     {
@@ -45,6 +46,8 @@ export interface GoogToolBoxOptions {
     // Start with keyboard capture enabled instead of requiring the user to tick
     // the "Capture keyboard" checkbox first.
     captureKeyboard?: boolean;
+    // Adds a checkbox that plays the device audio while checked.
+    audioPlayer?: AudioPlayer;
 }
 
 export class GoogToolBox extends ToolBox {
@@ -109,6 +112,26 @@ export class GoogToolBox extends ToolBox {
             client.setHandleKeyboardEvents(true);
         }
         elements.push(keyboard);
+
+        const { audioPlayer } = options;
+        if (audioPlayer) {
+            const audio = new ToolBoxCheckbox('Play audio', SvgImage.Icon.VOLUME_UP, `play_audio_${udid}`);
+            const input = audio.getElement();
+            audio.addEventListener('click', () => {
+                if (input.checked) {
+                    audioPlayer.start();
+                } else {
+                    audioPlayer.stop();
+                }
+            });
+            audioPlayer.on('stopped', ({ reason }) => {
+                input.checked = false;
+                if (reason) {
+                    console.warn('[GoogToolBox]', 'Audio stopped:', reason);
+                }
+            });
+            elements.push(audio);
+        }
 
         if (moreBox) {
             const displayId = player.getVideoSettings().displayId;

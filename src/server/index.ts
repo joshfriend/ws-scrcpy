@@ -27,6 +27,7 @@ async function loadGoogModules() {
     const { ControlCenter } = await import('./goog-device/services/ControlCenter');
     const { DeviceTracker } = await import('./goog-device/mw/DeviceTracker');
     const { WebsocketProxyOverAdb } = await import('./goog-device/mw/WebsocketProxyOverAdb');
+    const { ScrcpyAudioProxy } = await import('./goog-device/mw/ScrcpyAudioProxy');
 
     if (config.runLocalGoogTracker) {
         mw2List.push(DeviceTracker);
@@ -61,6 +62,7 @@ async function loadGoogModules() {
     /// #endif
 
     mwList.push(WebsocketProxyOverAdb);
+    mwList.push(ScrcpyAudioProxy);
 }
 loadPlatformModulesPromises.push(loadGoogModules());
 /// #endif
